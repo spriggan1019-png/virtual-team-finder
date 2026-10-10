@@ -1,0 +1,611 @@
+<!DOCTYPE html>
+<html lang="ko" class="scroll-smooth">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>프로젝트 팀원 모집: 쌈뽕 깔롱한 것</title>
+    <meta name="description" content="쌈뽕 깔롱한 것 팀의 가상 팀원 모집 웹페이지입니다. '검정'과 '하트' 테마로 혁신적인 프로젝트를 함께할 팀원을 모집합니다.">
+    <meta name="keywords" content="팀 모집, 쌈뽕 깔롱한 것, 프로젝트, 웹 개발, 디자이너, 협업, apply, 동방프로젝트">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap" rel="stylesheet"
+        media="print" onload="this.media='all'">
+
+    <style>
+        /*  LCP 최적화: 폰트 로딩이 완료되기 전에도 레이아웃이 깨지지 않도록 기본 스타일 정의 */
+        :root {
+            --bg-dark: #0A0A0A;
+            /* font-family는 렌더링이 블록되지 않도록 system-ui를 우선하고 Inter를 fallback으로 사용 */
+            font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Inter', sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-dark);
+        }
+
+        /* 스크롤 애니메이션 및 호버 효과 CSS (유지) */
+        .animate-on-scroll {
+            opacity: 0;
+            /*  미세 최적화: 애니메이션 속도를 미세하게 줄여 시각적 부드러움을 유지하면서도 GPU/메인 스레드 부담 감소 */
+            transition: opacity 0.7s ease-out, transform 0.7s ease-out;
+            transform: translateY(30px);
+            /* 이전 40px에서 30px로 줄임 */
+        }
+
+        .animate-on-scroll.is-visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .btn-primary {
+            transition: transform 0.15s ease, box-shadow 0.15s ease, background-color 0.3s;
+        }
+
+        .btn-primary:hover:not(:disabled) {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 10px rgba(236, 72, 153, 0.4);
+        }
+
+        .card-hover {
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .card-hover:hover {
+            box-shadow: 0 15px 25px -5px rgba(236, 72, 153, 0.1), 0 5px 10px -5px rgba(236, 72, 153, 0.05);
+            transform: translateY(-5px);
+        }
+
+        .input-style:focus {
+            outline: none;
+            border-color: #EC4899;
+            /* pink-600 */
+            box-shadow: 0 0 0 1px #EC4899;
+        }
+
+        .input-style:invalid:not(:placeholder-shown) {
+            border-color: #EF4444;
+            /* red-500 */
+            box-shadow: 0 0 0 1px #EF4444;
+        }
+
+        .message {
+            margin-top: 1rem;
+            font-weight: 600;
+        }
+    </style>
+
+</head>
+
+<body class="min-h-screen">
+
+    <header class="sticky top-0 z-50 bg-gray-950/90 backdrop-blur-sm shadow-md">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-white">
+            <div class="py-4 flex justify-between items-center">
+                <a href="#hero" class="text-2xl font-extrabold text-pink-600">쌈뽕 깔롱한 것</a>
+
+                <nav class="hidden md:flex space-x-8 font-medium" aria-label="메인 네비게이션">
+                    <a href="#about" class="hover:text-pink-600 transition duration-150">About</a>
+                    <a href="#works" class="hover:text-pink-600 transition duration-150">Works</a>
+                    <a href="#collaboration" class="hover:text-pink-600 transition duration-150">Collaboration</a>
+                    <a href="#apply" class="hover:text-pink-600 transition duration-150">Apply</a>
+                    <a href="#quality" class="hover:text-pink-600 transition duration-150">Quality</a>
+                </nav>
+
+                <button id="mobile-menu-toggle"
+                    class="md:hidden p-2 rounded-md text-pink-500 hover:text-pink-400 transition duration-200"
+                    aria-label="메뉴 열기/닫기" aria-expanded="false">
+                    <svg id="menu-icon" class="w-6 h-6" xmlns="http://www.w3.org/2000/svg" width="24" height="24"
+                        viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <line x1="4" x2="20" y1="12" y2="12" />
+                        <line x1="4" x2="20" y1="6" y2="6" />
+                        <line x1="4" x2="20" y1="18" y2="18" />
+                    </svg>
+                    <svg id="close-icon" class="w-6 h-6 hidden" xmlns="http://www.w3.org/2000/svg" width="24"
+                        height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                        stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M18 6 6 18" />
+                        <path d="m6 6 12 12" />
+                    </svg>
+                </button>
+            </div>
+
+            <nav id="mobile-menu" class="hidden md:hidden flex flex-col space-y-1 pb-4" aria-label="모바일 네비게이션">
+                <a href="#about" class="py-2 px-3 rounded-lg hover:bg-gray-800 transition duration-150">About</a>
+                <a href="#works" class="py-2 px-3 rounded-lg hover:bg-gray-800 transition duration-150">Works</a>
+                <a href="#collaboration"
+                    class="py-2 px-3 rounded-lg hover:bg-gray-800 transition duration-150">Collaboration</a>
+                <a href="#apply" class="py-2 px-3 rounded-lg hover:bg-gray-800 transition duration-150">Apply</a>
+                <a href="#quality" class="py-2 px-3 rounded-lg hover:bg-gray-800 transition duration-150">Quality</a>
+            </nav>
+        </div>
+    </header>
+
+    <main class="text-white">
+        <section id="hero"
+            class="min-h-[70vh] flex items-center justify-center text-center px-4 py-20 animate-on-scroll">
+            <div class="max-w-4xl mx-auto">
+                <p class="text-lg font-semibold mb-3">🖤 쌈뽕 깔롱한
+                    <strong>디자인과 개발</strong>을 위한 크루 모집 🖤
+                </p>
+                <h1 class="text-5xl sm:text-6xl lg:text-7xl font-extrabold leading-tight tracking-tighter mb-6">
+                    쌈뽕 깔롱한 것과 <br> 함께할 가상팀원
+                </h1>
+                <p class="text-xl mb-10">
+                    검정(Dark) 테마를 기반으로, 하트처럼 열정적인 아이디어를 현실로 만들어갈 팀에 합류하세요!
+                </p>
+                <a href="#apply"
+                    class="inline-flex items-center px-8 py-3 border border-transparent text-lg font-medium rounded-full shadow-lg bg-pink-600 btn-primary text-white">
+                    지금 바로 지원하기
+                </a>
+            </div>
+        </section>
+
+        <section id="about" class="py-20 px-4 sm:px-6 lg:px-8 animate-on-scroll">
+            <div class="max-w-7xl mx-auto">
+                <h2 class="text-4xl font-extrabold text-center mb-4">About Us & Goal</h2>
+                <p class="text-center text-xl mb-16 max-w-2xl mx-auto">
+                    우리는 단순한 팀이 아닌, 서로의 성장을 촉진하는 크루입니다.
+                </p>
+
+                <div class="grid md:grid-cols-2 gap-12 mb-20">
+                    <div
+                        class="bg-gray-900 p-8 rounded-xl shadow-lg border border-gray-700 card-hover transition duration-300">
+                        <h3 class="text-3xl font-bold mb-4 text-pink-600">프로젝트 목표</h3>
+                        <ul class="space-y-4 text-lg list-disc pl-6 marker:text-pink-400">
+                            <li>실무 프로세스 경험: 기획-디자인-코딩-협업툴 사용의 전 과정을 경험합니다.</li>
+                            <li>과제 요약: 팀 소개, 사이트 제작 과정/결과를 알리고 팀원 신청 폼을 제공합니다.</li>
+                            <li>최종 목표: 가상팀원(AXION 등)이 참여하고 싶은 웹페이지를 완성하고 실무 역량을 키웁니다.</li>
+                        </ul>
+                    </div>
+                    <div
+                        class="bg-gray-900 p-8 rounded-xl shadow-lg border border-gray-700 card-hover transition duration-300">
+                        <h3 class="text-3xl font-bold mb-6 text-pink-600">코어 팀 소개</h3>
+                        <div class="space-y-5">
+                            <div class="flex items-center space-x-4">
+                                <div
+                                    class="w-12 h-12 bg-indigo-900 rounded-full flex items-center justify-center font-semibold text-indigo-300">
+                                    YH</div>
+                                <div>
+                                    <h3 class="text-xl font-bold">김연후 (Kim Yeonhu)</h3>
+                                    <p class="text-sm font-medium text-gray-400">리더 (Leader)</p>
+                                    <p class="text-sm text-gray-400">프로젝트의 방향을 설정하고 팀을 이끌어갑니다.</p>
+                                </div>
+                            </div>
+                            <div class="flex items-center space-x-4">
+                                <div
+                                    class="w-12 h-12 bg-green-900 rounded-full flex items-center justify-center font-semibold text-green-300">
+                                    YS</div>
+                                <div>
+                                    <h3 class="text-xl font-bold">조영서 (Jo Yeongseo)</h3>
+                                    <p class="text-sm font-medium text-gray-400">기술 담당 (Technology)</p>
+                                    <p class="text-sm text-gray-400">웹페이지 코딩과 기능 구현을 담당합니다.</p>
+                                </div>
+                            </div>
+                            <div class="flex items-center space-x-4">
+                                <div
+                                    class="w-12 h-12 bg-yellow-900 rounded-full flex items-center justify-center font-semibold text-yellow-300">
+                                    AX</div>
+                                <div>
+                                    <h3 class="text-xl font-bold">퉁퉁퉁 AXION</h3>
+                                    <p class="text-sm font-medium text-gray-400">모든 일 (All Tasks)</p>
+                                    <p class="text-sm text-gray-400">팀이 필요로 하는 모든 일을 담당하는 가상 팀원입니다.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="works" class="py-20 px-4 sm:px-6 lg:px-8 animate-on-scroll">
+            <div class="max-w-7xl mx-auto">
+                <h2 class="text-4xl font-extrabold text-center mb-4">Our Previous Works</h2>
+                <p class="text-center text-xl mb-16 max-w-2xl mx-auto">
+                    우리가 만들어낸 결과물들을 통해 크루의 역량을 확인해 보세요.
+                </p>
+
+                <div class="grid md:grid-cols-3 gap-10">
+                    <div
+                        class="bg-gray-900 rounded-xl shadow-xl overflow-hidden card-hover transition duration-300 border border-gray-800">
+                        <img src="https://placehold.co/600x400/94a3b8/ffffff?text=Poster+AI+Prompt"
+                            alt="팀원 모집 포스터 AI 프롬프트 기록" class="w-full h-48 object-cover" width="600" height="400"
+                            loading="lazy">
+                        <div class="p-6">
+                            <h3 class="text-2xl font-bold mb-2">팀원 모집 홍보 비주얼 디자인 (AI 활용)</h3>
+                            <p class="text-gray-400">동방프로젝트 온리전 포스터를 참고하여 AI 디자이너를 활용해 포스터를 제작했습니다.</p>
+                        </div>
+                    </div>
+                    <div
+                        class="bg-gray-900 rounded-xl shadow-xl overflow-hidden card-hover transition duration-300 border border-gray-800">
+                        <img src="https://placehold.co/600x400/374151/ffffff?text=Design+System+Kit" alt="디자인 시스템 킷"
+                            class="w-full h-48 object-cover" width="600" height="400" loading="lazy">
+                        <div class="p-6">
+                            <h3 class="text-2xl font-bold mb-2">디자인 자산 / 시스템 구축</h3>
+                            <p class="text-gray-400">팀 내부적으로 통일된 색상, 폰트, 구성 요소 등을 정의하고, 디자인 효율을 높였습니다.</p>
+                        </div>
+                    </div>
+                    <div
+                        class="bg-gray-900 rounded-xl shadow-xl overflow-hidden card-hover transition duration-300 border border-gray-800">
+                        <img src="https://placehold.co/600x400/1f2937/ffffff?text=Web+Development" alt="웹사이트 개발 스크린샷"
+                            class="w-full h-48 object-cover" width="600" height="400" loading="lazy">
+                        <div class="p-6">
+                            <h3 class="text-2xl font-bold mb-2">웹사이트 개발</h3>
+                            <p class="text-gray-400">CSS와 JS를 기반으로 팀 소개 및 프로젝트 포트폴리오 웹페이지를 제작했습니다.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="collaboration" class="py-20 px-4 sm:px-6 lg:px-8 animate-on-scroll">
+            <div class="max-w-7xl mx-auto text-center">
+                <h2 class="text-4xl font-extrabold mb-4">Collaboration Tools & Rules</h2>
+                <p class="text-xl mb-12">팀 프로젝트 시 활용하는 협업 툴과 간단한 규칙을 안내합니다.</p>
+                <div class="flex justify-center gap-6 flex-wrap">
+                    <a href="https://www.notion.so/28862a88e34880e4a6b7cf073e3f01e4?v=28862a88e3488091bc3f000ccc1890b9"
+                        target="_blank" rel="noopener noreferrer"
+                        class="px-6 py-3 bg-gray-800 rounded-full shadow-md hover:bg-pink-600 transition text-white font-medium">Notion</a>
+                    <a href="https://www.figma.com/design/2JnSn64dcuTfsbYmykNfTG/%EC%8C%88%EB%BD%95-%EA%B9%94%EB%A1%B1%ED%95%9C-%EA%B2%83?node-id=11-358&p=f&t=ddclRZozmTYhgFAc-0"
+                        target="_blank" rel="noopener noreferrer"
+                        class="px-6 py-3 bg-gray-800 rounded-full shadow-md hover:bg-pink-600 transition text-white font-medium">Figma</a>
+                    <a href="https://github.com/Modernia/poster" target="_blank" rel="noopener noreferrer"
+                        class="px-6 py-3 bg-gray-800 rounded-full shadow-md hover:bg-pink-600 transition text-white font-medium">GitHub</a>
+                </div>
+                <div class="mt-10 max-w-2xl mx-auto">
+                    <ul class="space-y-4 text-lg text-left inline-block" aria-label="협업 규칙">
+                        <li class="flex items-start space-x-2 text-gray-300"><span
+                                class="text-pink-500 font-bold">1.</span> <span>매일 간단한 진행 상황 공유 (Daily Update)</span>
+                        </li>
+                        <li class="flex items-start space-x-2 text-gray-300"><span
+                                class="text-pink-500 font-bold">2.</span> <span>일정 변경 시 사전 공지 필수 (Proactive
+                                Communication)</span></li>
+                        <li class="flex items-start space-x-2 text-gray-300"><span
+                                class="text-pink-500 font-bold">3.</span> <span>모든 산출물은 클라우드에 저장 (Centralized
+                                Assets)</span></li>
+                        <li class="flex items-start space-x-2 text-gray-300"><span
+                                class="text-pink-500 font-bold">4.</span> <span>의견 충돌 시 팀 내 투표 진행 (Democratic
+                                Decision)</span></li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <section id="apply" class="py-20 px-4 sm:px-6 lg:px-8 animate-on-scroll">
+            <div class="max-w-3xl mx-auto text-white">
+                <header class="text-center mb-10">
+                    <h1 class="text-5xl font-extrabold mb-4 text-pink-500">"우리 팀에 당신이 필요합니다!"</h1>
+                    <p class="text-xl text-gray-300">
+                        어떤 팀과 함께 프로젝트를 해보고 싶나요?<br>
+                        또, 여러분은 어떤 역할로 팀에 기여할 수 있을까요?
+                    </p>
+                </header>
+
+                <section aria-labelledby="formIntro" class="mb-10 bg-gray-900 p-6 rounded-xl border border-gray-700">
+                    <h2 id="formIntro" class="text-2xl font-bold mb-3 text-pink-400">지원 전 안내</h2>
+                    <ul class="list-disc list-inside text-lg space-y-1 text-gray-300">
+                        <li>나의 강점과 성향</li>
+                        <li>도전하고 싶은 역할</li>
+                        <li>함께하고 싶은 이유</li>
+                    </ul>
+                    <p class="mt-4 text-gray-200">
+                        자유롭게, 진솔하게, 그리고 자신있게 적어주세요! <br>
+                        <strong class="text-pink-500">이제, 누군가가 여러분을 스카우트할지도 몰라요!</strong>
+                    </p>
+                </section>
+
+                <section aria-labelledby="formTitle">
+                    <h2 id="formTitle" class="text-4xl font-extrabold mb-6 text-center">팀 스카우트 지원서</h2>
+
+                    <form id="applicationForm" class="space-y-6">
+
+                        <fieldset class="p-6 rounded-xl border border-gray-700 bg-gray-900 shadow-lg">
+                            <legend class="text-2xl font-bold mb-4 text-pink-600 px-2">개인 정보</legend>
+
+                            <label for="applicant" class="block mb-2 font-medium">이름 (20자 이내)<span
+                                    class="text-pink-500 ml-1" aria-hidden="true">*</span></label>
+                            <input type="text" id="applicant" name="applicant" placeholder="예: 홍길동" maxlength="20"
+                                required
+                                class="input-style w-full px-4 py-3 rounded-lg bg-gray-800 border border-gray-600 text-white transition duration-200">
+
+                            <label for="phoneNumber" class="block mb-2 font-medium mt-4">연락처 (하이픈(-) 포함)<span
+                                    class="text-pink-500 ml-1" aria-hidden="true">*</span></label>
+                            <input type="text" id="phoneNumber" name="phoneNumber" maxlength="20"
+                                placeholder="예: 010-1234-5678" required pattern="\d{2,3}-\d{3,4}-\d{4}" inputmode="tel"
+                                title="전화번호는 하이픈(-)을 포함하여 2~3자리-3~4자리-4자리 형식으로 입력해야 합니다."
+                                class="input-style w-full px-4 py-3 rounded-lg bg-gray-800 border border-gray-600 text-white transition duration-200">
+
+                            <label for="email" class="block mb-2 font-medium mt-4">이메일<span class="text-pink-500 ml-1"
+                                    aria-hidden="true">*</span></label>
+                            <input type="email" id="email" name="email" maxlength="50"
+                                placeholder="예: example@email.com" required
+                                class="input-style w-full px-4 py-3 rounded-lg bg-gray-800 border border-gray-600 text-white transition duration-200">
+                        </fieldset>
+
+                        <fieldset class="p-6 rounded-xl border border-gray-700 bg-gray-900 shadow-lg">
+                            <legend class="text-2xl font-bold mb-4 text-pink-600 px-2">지원 내용</legend>
+
+                            <label for="role" class="block mb-2 font-medium">도전하고 싶은 역할<span class="text-pink-500 ml-1"
+                                    aria-hidden="true">*</span></label>
+                            <select id="role" name="role" required
+                                class="input-style w-full px-4 py-3 rounded-lg bg-gray-800 border border-gray-600 text-white appearance-none transition duration-200">
+                                <option value="" class="bg-gray-800 text-gray-400">-- 역할을 선택하세요 --</option>
+                                <option value="leader" class="bg-gray-800">팀 리더</option>
+                                <option value="designer" class="bg-gray-800">디자이너</option>
+                                <option value="developer" class="bg-gray-800">프론트엔드 개발자</option>
+                                <option value="backend" class="bg-gray-800">백엔드 개발자</option>
+                                <option value="planner" class="bg-gray-800">기획자</option>
+                                <option value="qa" class="bg-gray-800">테스터</option>
+                            </select>
+
+                            <label for="team" class="block mb-2 font-medium mt-4">지원할 팀<span class="text-pink-500 ml-1"
+                                    aria-hidden="true">*</span></label>
+                            <select id="team" name="team" required
+                                class="input-style w-full px-4 py-3 rounded-lg bg-gray-800 border border-gray-600 text-white appearance-none transition duration-200">
+                                <option value="" class="bg-gray-800 text-gray-400">-- 지원팀 선택 --</option>
+                                <option value="쌈뽕 깔롱한 것" class="bg-gray-800">쌈뽕 깔롱한 것</option>
+                            </select>
+
+                            <label for="reason" class="block mb-2 font-medium mt-4">함께하고 싶은 이유 (100자 이내)<span
+                                    class="text-pink-500 ml-1" aria-hidden="true">*</span></label>
+                            <textarea id="reason" name="reason" rows="4" maxlength="100"
+                                placeholder="자유롭게, 진솔하게, 그리고 자신있게 적어주세요!" required
+                                class="input-style w-full px-4 py-3 rounded-lg bg-gray-800 border border-gray-600 text-white resize-y transition duration-200"></textarea>
+                        </fieldset>
+
+                        <div class="buttons text-center pt-4">
+                            <button type="submit" id="submitBtn"
+                                class="px-10 py-3 bg-pink-600 hover:bg-pink-700 rounded-full font-extrabold text-white text-lg btn-primary shadow-xl transition duration-300 disabled:bg-gray-600 disabled:shadow-none">
+                                스카우트 지원하기
+                            </button>
+                        </div>
+
+                        <div id="message" class="message text-center" role="status" aria-live="polite"></div>
+
+                    </form>
+                </section>
+            </div>
+        </section>
+
+        <section id="quality" class="py-20 px-4 sm:px-6 lg:px-8 animate-on-scroll">
+            <div class="max-w-5xl mx-auto text-center">
+                <h2 class="text-4xl font-extrabold mb-6">Our Quality</h2>
+                <p class="text-xl mb-10 text-gray-300">
+                    우리는 단순히 프로젝트를 완성하는 것이 목표가 아니라, 품질과 경험을 동시에 추구합니다.
+                </p>
+                <div class="grid md:grid-cols-3 gap-10">
+                    <div
+                        class="bg-gray-900 p-8 rounded-xl shadow-lg card-hover transition duration-300 border border-gray-800">
+                        <h3 class="text-2xl font-bold mb-2 text-pink-500">디자인</h3>
+                        <p class="text-gray-400">UI/UX의 심미적 완성도를 최우선으로 합니다.</p>
+                    </div>
+                    <div
+                        class="bg-gray-900 p-8 rounded-xl shadow-lg card-hover transition duration-300 border border-gray-800">
+                        <h3 class="text-2xl font-bold mb-2 text-pink-500">개발</h3>
+                        <p class="text-gray-400">최신 기술 스택으로 안정적이고 반응형 웹을 제공합니다.</p>
+                    </div>
+                    <div
+                        class="bg-gray-900 p-8 rounded-xl shadow-lg card-hover transition duration-300 border border-gray-800">
+                        <h3 class="text-2xl font-bold mb-2 text-pink-500">협업</h3>
+                        <p class="text-gray-400">팀워크와 원활한 소통을 통해 효율적인 프로젝트 진행을 보장합니다.</p>
+                    </div>
+                </div>
+
+                <div class="mt-20">
+                    <h3 class="text-3xl font-extrabold mb-8 text-pink-500">웹 품질 인증 결과</h3>
+                    <div class="grid md:grid-cols-2 gap-10">
+
+                        <div
+                            class="bg-gray-900 p-6 rounded-xl shadow-2xl border border-gray-700 hover:shadow-pink-900/50 transition duration-300 cursor-pointer">
+                            <h4 class="text-2xl font-bold mb-4 text-white">Google Lighthouse 점수</h4>
+                            <div
+                                class="h-auto max-h-[400px] w-full mb-4 overflow-hidden rounded-lg border-2 border-pink-600 flex items-center justify-center">
+                                <img id="img-lighthouse" src="mig/unnamed (1).jpg"
+                                    data-original-src="mig/unnamed (1).jpg" data-toggle-src="mig/illya.jpg"
+                                    alt="웹사이트 성능 및 접근성 점수 (97점 및 100점)" class="w-full h-full object-contain" width="400"
+                                    height="400" loading="lazy">
+                            </div>
+                            <p id="text-lighthouse"
+                                data-original-text="성능(Performance) 97점, 접근성(Accessibility), 모범 사례(Best Practices), SEO 모두 **100점**을 달성하여 기술적인 웹 품질을 입증합니다. (클릭하여 다른 이미지 확인)"
+                                data-toggle-text="이리야 무녀 복장!" class="text-lg text-gray-300 font-medium px-2">
+                                성능(Performance) 97점, 접근성(Accessibility), 모범 사례(Best Practices), SEO 모두 **100점**을 달성하여
+                                기술적인 웹 품질을 입증합니다. (클릭하여 다른 이미지 확인)
+                            </p>
+                        </div>
+
+                        <div
+                            class="bg-gray-900 p-6 rounded-xl shadow-2xl border border-gray-700 hover:shadow-pink-900/50 transition duration-300 cursor-pointer">
+                            <h4 class="text-2xl font-bold mb-4 text-white">WAVE 접근성 평가 결과</h4>
+                            <div
+                                class="h-auto max-h-[400px] w-full mb-4 overflow-hidden rounded-lg border-2 border-pink-600 flex items-center justify-center">
+                                <img id="img-wave" src="mig/unnamed (2).jpg" data-original-src="mig/unnamed (2).jpg"
+                                    data-toggle-src="mig/리버렐리농.png" alt="WAVE 웹 접근성 평가 도구 요약 (오류 0개)"
+                                    class="w-full h-full object-contain" width="400" height="400" loading="lazy">
+                            </div>
+                            <p id="text-wave"
+                                data-original-text="WAVE 툴을 사용하여 웹 접근성 평가 결과, **오류(Errors) 0개**를 기록했습니다. 모두가 사용하기 편리한 웹페이지를 만듭니다. (클릭하여 다른 이미지 확인)"
+                                data-toggle-text="귀여움" class="text-lg text-gray-300 font-medium px-2">
+                                WAVE 툴을 사용하여 웹 접근성 평가 결과, **오류(Errors) 0개**를 기록했습니다. 모두가 사용하기 편리한 웹페이지를 만듭니다. (클릭하여 다른
+                                이미지 확인)
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer class="bg-gray-950/90 text-gray-400 py-8 mt-10">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+            <p>&copy; 2026 쌈뽕 깔롱한 것. All Rights Reserved.</p>
+            <p class="text-sm mt-2">이 웹페이지는 가상 팀원 모집 프로젝트를 위해 제작되었습니다.</p>
+        </div>
+    </footer>
+
+    <script src="https://cdn.tailwindcss.com" defer></script>
+    <script src="https://unpkg.com/lucide@latest" defer></script>
+
+    <script type="module" defer>
+
+        // --- Google Apps Script (GAS) 기반 폼 제출 로직 (생략) ---
+        const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwV_2L5nEDzJ2egFB82LLSMhRhYqA8DtGakwiu_V-A16NtSwxD9fl3w8-rtVzK-1t0s0w/exec";
+
+        document.addEventListener('DOMContentLoaded', () => {
+
+            const form = document.getElementById('applicationForm');
+            const submitBtn = document.getElementById('submitBtn');
+            const messageDiv = document.getElementById('message');
+
+            // --- 모바일 메뉴 토글 관련 DOM 요소 (생략) ---
+            const toggleButton = document.getElementById('mobile-menu-toggle');
+            const mobileMenu = document.getElementById('mobile-menu');
+            const menuIcon = document.getElementById('menu-icon');
+            const closeIcon = document.getElementById('close-icon');
+
+            // --- 이미지/텍스트 토글 관련 DOM 요소 ---
+            const imgLighthouse = document.getElementById('img-lighthouse');
+            const imgWave = document.getElementById('img-wave');
+
+            const textLighthouse = document.getElementById('text-lighthouse');
+            const textWave = document.getElementById('text-wave');
+
+            /**
+             * 이미지와 텍스트의 src/내용을 original과 toggle 간에 교체하는 함수
+             * @param {HTMLElement} imgElement - 클릭된 <img> 요소
+             * @param {HTMLElement} textElement - 이미지 아래의 <p> 요소
+             */
+            function toggleImageAndText(imgElement, textElement) {
+                // 현재 이미지의 src 속성 값을 가져옵니다.
+                const currentSrc = imgElement.getAttribute('src');
+
+                const originalSrc = imgElement.getAttribute('data-original-src');
+                const toggleSrc = imgElement.getAttribute('data-toggle-src');
+
+                const originalText = textElement.getAttribute('data-original-text');
+                const toggleText = textElement.getAttribute('data-toggle-text');
+
+                // 파일명만 추출하여 비교하는 로직
+                const currentFileName = currentSrc ? currentSrc.split('/').pop() : '';
+                const originalFileName = originalSrc ? originalSrc.split('/').pop() : '';
+                const toggleFileName = toggleSrc ? toggleSrc.split('/').pop() : '';
+
+                // 현재 파일명이 오리지널 파일명과 일치하는지 확인
+                if (currentFileName === originalFileName) {
+                    // 오리지널 이미지이면, 토글 이미지와 텍스트로 변경
+                    imgElement.src = toggleSrc;
+                    textElement.innerHTML = toggleText; // innerHTML을 사용하여 HTML 태그도 적용
+                }
+                // 현재 파일명이 토글 파일명과 일치하는지 확인
+                else if (currentFileName === toggleFileName) {
+                    // 토글 이미지이면, 오리지널 이미지와 텍스트로 변경
+                    imgElement.src = originalSrc;
+                    textElement.innerHTML = originalText;
+                }
+                // 만약 경로가 이상하다면, 일단 오리지널로 강제 설정
+                else {
+                    imgElement.src = originalSrc;
+                    textElement.innerHTML = originalText;
+                }
+            }
+
+            // 이미지 클릭 이벤트 리스너 설정: 부모 div에 이벤트를 연결합니다.
+            if (imgLighthouse && textLighthouse) {
+                // Lighthouse 섹션의 부모 div를 클릭했을 때 이미지와 텍스트 토글
+                imgLighthouse.parentElement.addEventListener('click', () => toggleImageAndText(imgLighthouse, textLighthouse));
+            }
+            if (imgWave && textWave) {
+                // WAVE 섹션의 부모 div를 클릭했을 때 이미지와 텍스트 토글
+                imgWave.parentElement.addEventListener('click', () => toggleImageAndText(imgWave, textWave));
+            }
+
+
+            // 폼 제출 로직 등 기타 JavaScript (유지)
+            function toggleMenu() {
+                const isHidden = mobileMenu.classList.toggle('hidden');
+                menuIcon.classList.toggle('hidden');
+                closeIcon.classList.toggle('hidden');
+                toggleButton.setAttribute('aria-expanded', String(!isHidden));
+            }
+            toggleButton.addEventListener('click', toggleMenu);
+            mobileMenu.querySelectorAll('a').forEach(link => {
+                link.addEventListener('click', () => {
+                    if (!mobileMenu.classList.contains('hidden')) {
+                        toggleMenu();
+                    }
+                });
+            });
+
+            function showMessage(text, type) {
+                messageDiv.textContent = text;
+                let colorClass = 'text-yellow-500';
+                if (type === 'success') {
+                    colorClass = 'text-green-500';
+                } else if (type === 'error') {
+                    colorClass = 'text-red-500';
+                }
+                messageDiv.className = `message text-center ${colorClass}`;
+            }
+
+            form.addEventListener('submit', async (e) => {
+                e.preventDefault();
+
+                if (!form.checkValidity()) {
+                    showMessage('⚠️ 모든 필수 항목을 올바르게 입력해주세요. 전화번호 형식을 확인하세요.', 'error');
+                    form.reportValidity();
+                    return;
+                }
+
+                showMessage('지원서를 제출하는 중...', 'pending');
+                submitBtn.disabled = true;
+                submitBtn.textContent = '제출 중...';
+
+                const formData = {
+                    applicant: document.getElementById('applicant').value,
+                    phoneNumber: document.getElementById('phoneNumber').value,
+                    email: document.getElementById('email').value,
+                    role: document.getElementById('role').value,
+                    team: document.getElementById('team').value,
+                    reason: document.getElementById('reason').value
+                };
+
+                try {
+                    const response = await fetch(SCRIPT_URL, {
+                        method: 'POST',
+                        mode: 'no-cors',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify(formData)
+                    });
+
+                    showMessage('✅ 지원서가 성공적으로 제출되었습니다! (Google Sheets로 전송됨)', 'success');
+                    form.reset();
+
+                } catch (error) {
+                    showMessage('❌ 데이터 업로드 실패. 네트워크 연결 또는 스크립트 URL을 확인해주세요.', 'error');
+                    console.error('Error submitting to Google Sheets:', error);
+                } finally {
+                    submitBtn.disabled = false;
+                    submitBtn.textContent = '스카우트 지원하기';
+                }
+            });
+
+            //  애니메이션 옵저버 로직
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('is-visible');
+                        observer.unobserve(entry.target);
+                    }
+                });
+            }, { threshold: 0.05 });
+
+            document.querySelectorAll('.animate-on-scroll').forEach(el => observer.observe(el));
+        });
+    </script>
+
+</body>
+
+</html>
